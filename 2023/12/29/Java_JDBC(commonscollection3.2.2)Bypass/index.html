@@ -16,12 +16,12 @@
   <meta name="author" content="Pho3n1x">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Java_JDBC(commonscollection3.2.3)Bypass0x01 分析题目简单捋捋信息，访问题目得到一个连接测试页面  题目给出的附件如下：  不难看出考点是DB2的JNDI注入，DB2打JNDI的payload大致如下： 1jdbc:db2:&#x2F;&#x2F;127.0.0.1:50001&#x2F;db:clientRerouteServerListJNDIName&#x3D;ldap:&#x2F;&#x2F;127.0.0">
+    <meta name="description" content="Java_JDBC(commonscollection3.2.2)Bypass0x01 分析题目简单捋捋信息，访问题目得到一个连接测试页面  题目给出的附件如下：  不难看出考点是DB2的JNDI注入，DB2打JNDI的payload大致如下： 1jdbc:db2:&#x2F;&#x2F;127.0.0.1:50001&#x2F;db:clientRerouteServerListJNDIName&#x3D;ldap:&#x2F;&#x2F;127.0.0">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java_JDBC(commonscollection3.2.3)Bypass">
-<meta property="og:url" content="https://pho3n1x-web.github.io/2023/12/29/Java_JDBC(commonscollection3.2.3)Bypass/index.html">
+<meta property="og:title" content="Java_JDBC(commonscollection3.2.2)Bypass">
+<meta property="og:url" content="https://pho3n1x-web.github.io/2023/12/29/Java_JDBC(commonscollection3.2.2)Bypass/index.html">
 <meta property="og:site_name" content="Pho3n1x&#39;s Blog">
-<meta property="og:description" content="Java_JDBC(commonscollection3.2.3)Bypass0x01 分析题目简单捋捋信息，访问题目得到一个连接测试页面  题目给出的附件如下：  不难看出考点是DB2的JNDI注入，DB2打JNDI的payload大致如下： 1jdbc:db2:&#x2F;&#x2F;127.0.0.1:50001&#x2F;db:clientRerouteServerListJNDIName&#x3D;ldap:&#x2F;&#x2F;127.0.0">
+<meta property="og:description" content="Java_JDBC(commonscollection3.2.2)Bypass0x01 分析题目简单捋捋信息，访问题目得到一个连接测试页面  题目给出的附件如下：  不难看出考点是DB2的JNDI注入，DB2打JNDI的payload大致如下： 1jdbc:db2:&#x2F;&#x2F;127.0.0.1:50001&#x2F;db:clientRerouteServerListJNDIName&#x3D;ldap:&#x2F;&#x2F;127.0.0">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://pho3n1x-web.github.io/images/image-20231229144039463.png">
 <meta property="og:image" content="https://pho3n1x-web.github.io/images/image-20231229144142632.png">
@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://pho3n1x-web.github.io/images/image-20231229193233364.png">
 <meta property="og:image" content="https://pho3n1x-web.github.io/images/image-20231229214427117.png">
 <meta property="article:published_time" content="2023-12-29T06:03:05.700Z">
-<meta property="article:modified_time" content="2023-12-29T13:48:56.957Z">
+<meta property="article:modified_time" content="2024-01-01T06:52:57.828Z">
 <meta property="article:author" content="Pho3n1x">
 <meta property="article:tag" content="CTF">
 <meta property="article:tag" content="Bypass">
@@ -42,7 +42,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Java_JDBC(commonscollection3.2.3)Bypass - Pho3n1x&#39;s Blog</title>
+  <title>Java_JDBC(commonscollection3.2.2)Bypass - Pho3n1x&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -248,7 +248,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Java_JDBC(commonscollection3.2.3)Bypass"></span>
+            <span id="subtitle" data-typed-text="Java_JDBC(commonscollection3.2.2)Bypass"></span>
           
         </div>
 
@@ -319,12 +319,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Java_JDBC(commonscollection3.2.3)Bypass</h1>
+            <h1 id="seo-header">Java_JDBC(commonscollection3.2.2)Bypass</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="Java-JDBC-commonscollection3-2-3-Bypass"><a href="#Java-JDBC-commonscollection3-2-3-Bypass" class="headerlink" title="Java_JDBC(commonscollection3.2.3)Bypass"></a>Java_JDBC(commonscollection3.2.3)Bypass</h1><h2 id="0x01-分析题目"><a href="#0x01-分析题目" class="headerlink" title="0x01 分析题目"></a>0x01 分析题目</h2><p>简单捋捋信息，访问题目得到一个连接测试页面</p>
+                <h1 id="Java-JDBC-commonscollection3-2-2-Bypass"><a href="#Java-JDBC-commonscollection3-2-2-Bypass" class="headerlink" title="Java_JDBC(commonscollection3.2.2)Bypass"></a>Java_JDBC(commonscollection3.2.2)Bypass</h1><h2 id="0x01-分析题目"><a href="#0x01-分析题目" class="headerlink" title="0x01 分析题目"></a>0x01 分析题目</h2><p>简单捋捋信息，访问题目得到一个连接测试页面</p>
 <p><img src="/./../images/image-20231229144039463.png" srcset="/img/loading.gif" lazyload alt="image-20231229144039463"></p>
 <p>题目给出的附件如下：</p>
 <p><img src="/./../images/image-20231229144142632.png" srcset="/img/loading.gif" lazyload alt="image-20231229144142632"></p>
@@ -424,8 +424,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Java_JDBC(commonscollection3.2.3)Bypass</div>
-      <div>https://pho3n1x-web.github.io/2023/12/29/Java_JDBC(commonscollection3.2.3)Bypass/</div>
+      <div>Java_JDBC(commonscollection3.2.2)Bypass</div>
+      <div>https://pho3n1x-web.github.io/2023/12/29/Java_JDBC(commonscollection3.2.2)Bypass/</div>
     </div>
     <div class="license-meta">
       
